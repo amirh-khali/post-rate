@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from rest_framework import generics, status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from posts.models import Post, Rating
@@ -11,6 +12,7 @@ from posts.serializers import PostSerializer, RatingSerializer
 class PostListView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -18,15 +20,11 @@ class PostListView(viewsets.ModelViewSet):
             post.average_rating, post.rating_count = get_cached_rating_data(post.id)
         return queryset
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
-
 
 class RatingCreateUpdateView(generics.CreateAPIView):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    permission_classes = [IsAuthenticated, ]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
