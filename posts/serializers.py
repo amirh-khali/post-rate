@@ -10,13 +10,13 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'created_by', 'rating_count', 'average_rating', 'user_rating']
+        fields = ['title', 'content', 'rating_count', 'average_rating', 'user_rating']
         read_only_fields = ['average_rating', 'user_rating']
 
-    def get_user_rating(self, obj):
-        request = self.context.get('request')
-        if request:
-            rating = Rating.objects.filter(post=obj, user_id=obj.created_by).first()
+    def get_user_rating(self, obj, *args, **kwargs):
+        user_id = self.context.get('request').parser_context.get('kwargs').get('user_id')
+        if user_id:
+            rating = Rating.objects.filter(post=obj, user_id=user_id).first()
             return rating.score if rating else None
         return None
 
