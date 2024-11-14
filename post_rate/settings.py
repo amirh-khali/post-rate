@@ -28,19 +28,19 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 
-# CELERY STUFF
-BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/Tehran'
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# Cache Backend with Redis
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_TIMEOUT': 5,
+            'IGNORE_EXCEPTIONS': True,
+        },
+        'TIMEOUT': None,
+    }
+}
 
 # Application definition
 
@@ -122,6 +122,18 @@ AUTH_PASSWORD_VALIDATORS = [
     #     "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     # },
 ]
+
+
+# Kafka Configuration
+KAFKA_SETTINGS = {
+    'BOOTSTRAP_SERVERS': '127.0.0.1:9092',  # List of Kafka broker URLs
+    'TOPIC': 'post_rating_updates',         # Kafka topic name
+    'GROUP_ID': 'post_rating_group',        # Consumer group ID
+    'AUTO_OFFSET_RESET': 'earliest',        # Start from the earliest message
+    'ENABLE_AUTO_COMMIT': True,             # Enable automatic offset commit
+    'BATCH_SIZE': 100,                      # Optional: for batching
+    'BATCH_TIMEOUT': 5,                     # Optional: max wait time for batch (seconds)
+}
 
 
 # Internationalization

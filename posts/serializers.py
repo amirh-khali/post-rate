@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
+from posts.kafka.producer import send_rating_update_to_kafka
 from posts.models import Post, Rating
-from posts.services import update_post_rating_data
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -46,8 +46,8 @@ class RatingSerializer(serializers.ModelSerializer):
         else:
             old_score = None
 
-        # Update Redis data
-        update_post_rating_data(post.id, old_score, new_score)
+        # Send update to Kafka
+        send_rating_update_to_kafka(post.id, old_score, new_score)
 
         rating, created = Rating.objects.update_or_create(user=user, post=post, defaults={'score': new_score})
         return rating
