@@ -1,7 +1,5 @@
 
-# Post-Rate Project Documentation
-
-## Overview
+# Post-Rate
 
 The `post-rate` project is a backend application designed to enable users to view a list of posts and rate them. The project is implemented using Django Rest Framework (DRF), PostgreSQL, Redis, and Kafka.
 
