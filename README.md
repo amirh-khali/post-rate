@@ -5,7 +5,6 @@
 
 The `post-rate` project is a backend application designed to enable users to view a list of posts and rate them. The project is implemented using Django Rest Framework (DRF), PostgreSQL, Redis, and Kafka.
 
----
 
 ## Architecture
 
@@ -34,7 +33,6 @@ The `post-rate` project is a backend application designed to enable users to vie
   - Handles rating updates asynchronously to avoid race conditions and ensure efficient updates to Redis.
   - Enables batch processing for enhanced performance.
 
----
 
 ## Main Endpoints
 
@@ -49,7 +47,6 @@ The `post-rate` project is a backend application designed to enable users to vie
     - Allows users to submit a rating (0-5) for a post.
     - Updates are idempotent, meaning users can change their rating, and only the latest value is stored.
 
----
 
 ## How It Works
 
@@ -66,7 +63,6 @@ The `post-rate` project is a backend application designed to enable users to vie
       - Incorporates a 5-minute caching mechanism for post statistics to mitigate the impact of sudden, emotionally-driven rating spikes.
     - If a user rating exists, it is retrieved from PostgreSQL.
 
----
 
 ## How to Use
 
@@ -83,11 +79,10 @@ The `post-rate` project is a backend application designed to enable users to vie
     pip install -r requirements.txt
     ```
 
-3. Setup Redis:
-    - Start Redis using Docker:
-      ```bash
-      docker run --name redis -p 6379:6379 -d redis
-      ```
+3. Setup Redis using Docker:
+    ```bash
+    docker run --name redis -p 6379:6379 -d redis
+    ```
 
 4. Run database migrations:
     ```bash
@@ -104,7 +99,6 @@ The `post-rate` project is a backend application designed to enable users to vie
     python manage.py kafka_consumer.py
     ```
 
----
 
 ## Design Considerations
 
