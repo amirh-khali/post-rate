@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from posts.models import Post, Rating
+from posts.services import update_post_rating_data
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -37,6 +38,16 @@ class RatingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         post = validated_data['post']
-        score = validated_data['score']
-        rating, created = Rating.objects.update_or_create(user=user, post=post, defaults={'score': score})
+        new_score = validated_data['score']
+        existing_rating = Rating.objects.filter(user=user, post=post).first()
+
+        if existing_rating:
+            old_score = existing_rating.score
+        else:
+            old_score = None
+
+        # Update Redis data
+        update_post_rating_data(post.id, old_score, new_score)
+
+        rating, created = Rating.objects.update_or_create(user=user, post=post, defaults={'score': new_score})
         return rating
